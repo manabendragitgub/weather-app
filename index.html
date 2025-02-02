@@ -1,0 +1,107 @@
+<<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        color: #fff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .weather-app {
+        text-align: center;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        border-radius: 10px;
+      }
+      h1 {
+        margin-bottom: 20px;
+      }
+      select,
+      button {
+        padding: 10px;
+        margin: 10px;
+        border: none;
+        border-radius: 5px;
+      }
+      button {
+        background-color: #ff7e5f;
+        color: #fff;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #feb47b;
+      }
+      .weather-result {
+        margin-top: 20px;
+        font-size: 1.2em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="weather-app">
+      <h1>Weather App</h1>
+      <select id="city-dropdown">
+        <option value="">Select a City</option>
+        <option value="Delhi">Delhi</option>
+        <option value="Mumbai">Mumbai</option>
+        <option value="Bangalore">Bangalore</option>
+        <option value="Kolkata">Kolkata</option>
+        <option value="Chennai">Chennai</option>
+        <option value="Hyderabad">Hyderabad</option>
+        <option value="Pune">Pune</option>
+        <option value="Ahmedabad">Ahmedabad</option>
+        <option value="Jaipur">Jaipur</option>
+        <option value="Surat">Surat</option>
+        <option value="Lucknow">Lucknow</option>
+      </select>
+      <br />
+      <button onclick="getWeather()">Get Weather</button>
+      <div class="weather-result" id="result"></div>
+    </div>
+
+    <script>
+      async function getWeather() {
+        const cityDropdown = document.getElementById("city-dropdown");
+        const city = cityDropdown.value;
+        if (!city) {
+          alert("Please select a city.");
+          return;
+        }
+
+        const apiKey = "dc7e0005bf7d2421c267f961ba0f5168";
+        const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        try {
+          const response = await fetch(apiUrl);
+          if (!response.ok) {
+            if (response.status === 404) {
+              document.getElementById("result").innerText = "City not found.";
+            } else {
+              throw new Error("Unable to fetch weather data.");
+            }
+            return;
+          }
+          const weatherData = await response.json();
+          const temperature = weatherData.main.temp;
+          const weatherDescription = weatherData.weather[0].description;
+
+          document.getElementById(
+            "result"
+          ).innerText = `Temperature: ${temperature}°C, ${weatherDescription}`;
+        } catch (error) {
+          document.getElementById(
+            "result"
+          ).innerText = `Error: ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>
